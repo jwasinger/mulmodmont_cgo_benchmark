@@ -20,7 +20,7 @@ func main() {
 	y := [6]C.ulong{0xffffffffffffffff,0xffffffffffffffff,0xffffffffffffffff,0xffffffffffffffff,0xffffffffffffffff,0xffffffffffffffff}
 
 	start := time.Now()
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 10000000; i++ {
 		mulmodmont(&x, &x, &y)
 	}
 	t := time.Now()

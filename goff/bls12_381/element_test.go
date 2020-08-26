@@ -20,7 +20,6 @@ package bls12_381
 import (
 	"crypto/rand"
 	"math/big"
-	"math/bits"
 	mrand "math/rand"
 	"testing"
 )
@@ -331,67 +330,4 @@ func BenchmarkMulELEMENT(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		benchResElement.Mul(&benchResElement, &x)
 	}
-}
-
-func TestELEMENTreduce(t *testing.T) {
-	q := Element{
-		13402431016077863595,
-		2210141511517208575,
-		7435674573564081700,
-		7239337960414712511,
-		5412103778470702295,
-		1873798617647539866,
-	}
-
-	var testData []Element
-	{
-		a := q
-		a[5]--
-		testData = append(testData, a)
-	}
-	{
-		a := q
-		a[0]--
-		testData = append(testData, a)
-	}
-	{
-		a := q
-		a[5]++
-		testData = append(testData, a)
-	}
-	{
-		a := q
-		a[0]++
-		testData = append(testData, a)
-	}
-	{
-		a := q
-		testData = append(testData, a)
-	}
-
-	for _, s := range testData {
-		expected := s
-		reduceElement(&s)
-		expected.testReduce()
-		if !s.Equal(&expected) {
-			t.Fatal("reduce failed")
-		}
-	}
-
-}
-
-func (z *Element) testReduce() *Element {
-
-	// if z > q --> z -= q
-	// note: this is NOT constant time
-	if !(z[5] < 1873798617647539866 || (z[5] == 1873798617647539866 && (z[4] < 5412103778470702295 || (z[4] == 5412103778470702295 && (z[3] < 7239337960414712511 || (z[3] == 7239337960414712511 && (z[2] < 7435674573564081700 || (z[2] == 7435674573564081700 && (z[1] < 2210141511517208575 || (z[1] == 2210141511517208575 && (z[0] < 13402431016077863595))))))))))) {
-		var b uint64
-		z[0], b = bits.Sub64(z[0], 13402431016077863595, 0)
-		z[1], b = bits.Sub64(z[1], 2210141511517208575, b)
-		z[2], b = bits.Sub64(z[2], 7435674573564081700, b)
-		z[3], b = bits.Sub64(z[3], 7239337960414712511, b)
-		z[4], b = bits.Sub64(z[4], 5412103778470702295, b)
-		z[5], _ = bits.Sub64(z[5], 1873798617647539866, b)
-	}
-	return z
 }

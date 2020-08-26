@@ -300,6 +300,11 @@ func (z Element) ToRegular() Element {
 	return *z.FromMont()
 }
 
+func (z *Element) MontString() string {
+	var _z big.Int
+	return z.ToBigInt(&_z).String()
+}
+
 // String returns the string form of an Element in Montgomery form
 func (z *Element) String() string {
 	var _z big.Int
